@@ -1,25 +1,19 @@
 import { UnauthorizedError } from '../utils/errors';
 import { NextFunction, Request, Response } from 'express';
-import jwt, { Secret } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import config from '../../config';
 
 const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     //get authorization token
-    const token = req.headers.authorization;
-    if (!token) {
-      throw new UnauthorizedError('You are not authorized');
-    }
+    const token = req.cookies['refreshToken'];
+    if (!token) throw new UnauthorizedError('You are not authorized');
+
     // verify token
-    let verifiedUser = null;
+    const verifiedUser = jwt.verify(token, config.jwt.refresh_token_secret as Secret);
+    if (!verifiedUser) throw new UnauthorizedError('Please login');
 
-    verifiedUser = jwt.verify(token, config.jwt.secret as Secret);
-    if (!verifiedUser) throw new UnauthorizedError('You are not authorized');
-
-    req.user = {
-      role: verifiedUser.role,
-      id: verifiedUser._id,
-    };
+    req.user = verifiedUser as JwtPayload;
 
     next();
   } catch (error) {

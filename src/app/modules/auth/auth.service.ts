@@ -14,8 +14,8 @@ export const createUser = async (userData: IUser) => {
   user = new UserModel({ name, email, password });
   await user.save();
 
-  const accessToken = jwt.sign({ id: user._id, email: user.email }, config.jwt.access_token_secret as Secret, { expiresIn: '5d' });
-  const refreshToken = jwt.sign({ id: user._id, email: user.email }, config.jwt.refresh_token_secret as Secret, { expiresIn: '20d' });
+  const accessToken = jwt.sign({ _id: user._id, email: user.email }, config.jwt.access_token_secret as Secret, { expiresIn: '5d' });
+  const refreshToken = jwt.sign({ _id: user._id, email: user.email }, config.jwt.refresh_token_secret as Secret, { expiresIn: '20d' });
   console.log(accessToken, refreshToken, user);
 
   return { accessToken, refreshToken, user };
@@ -32,8 +32,8 @@ export const loginUser = async (payload: IUser) => {
   console.log(isPasswordMatched);
   if (!isPasswordMatched) throw new UnauthorizedError('Invalid password');
 
-  const accessToken = jwt.sign({ id: user._id, email: user.email }, config.jwt.access_token_secret as Secret, { expiresIn: '5d' });
-  const refreshToken = jwt.sign({ id: user._id, email: user.email }, config.jwt.refresh_token_secret as Secret, { expiresIn: '20d' });
+  const accessToken = jwt.sign({ _id: user._id, email: user.email }, config.jwt.access_token_secret as Secret, { expiresIn: '5d' });
+  const refreshToken = jwt.sign({ _id: user._id, email: user.email }, config.jwt.refresh_token_secret as Secret, { expiresIn: '20d' });
 
   return { accessToken, refreshToken, user };
 };

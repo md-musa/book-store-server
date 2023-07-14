@@ -1,10 +1,10 @@
 import express from 'express';
-const router = express.Router();
 import * as WishlistController from './wishlist.controller';
-import auth from '../../middlewares/auth';
+import authenticateUser from '../../middlewares/authenticateUser';
+const router = express.Router();
 
-router.post('/', WishlistController.addToWishlistHandler);
-router.get('/', WishlistController.getWishlistHandler);
-router.get('/:userId', WishlistController.removeFromWishlistHandler);
+router.post('/', authenticateUser, WishlistController.addToWishlistHandler);
+router.get('/', authenticateUser, WishlistController.getWishlistHandler);
+router.get('/:userId', authenticateUser, WishlistController.removeFromWishlistHandler);
 
 export default router;
