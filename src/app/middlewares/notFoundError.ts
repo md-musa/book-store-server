@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 const notFoundError = (req: Request, res: Response) => {
   res.status(404).json({
