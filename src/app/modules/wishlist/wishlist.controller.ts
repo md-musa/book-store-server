@@ -11,17 +11,14 @@ export const addToWishlistHandler = async (req: Request, res: Response): Promise
 
 export const removeFromWishlistHandler = async (req: Request, res: Response): Promise<void> => {
   const { book, user } = req.body;
-  await WishlistService.removeFromWishlist(book, user);
-  res.status(200).json({ message: 'Successfully removed from wishlist' });
+  const wishlist = await WishlistService.removeFromWishlist(book, user);
+
+  sendResponse(res, 200, 'Successfully removed from wishlist', wishlist);
 };
 
 export const getWishlistHandler = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { userId } = req.params;
-    const wishlist = await WishlistService.getWishlist(userId);
-    res.json(wishlist);
-  } catch (error) {
-    console.error('Error retrieving wishlist:', error);
-    res.status(500).json({ error: 'Failed to retrieve wishlist' });
-  }
+  const { userId } = req.params;
+  const wishlist = await WishlistService.getWishlist(userId);
+
+  sendResponse(res, 200, 'Wishlist retrieve successfully', wishlist);
 };
