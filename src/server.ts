@@ -4,8 +4,7 @@ import config from './config';
 
 const connectDB = async () => {
   try {
-    console.log(process.env.NODE_ENV);
-    // console.log(config.database_url);
+    console.log('Environment: ', process.env.NODE_ENV);
 
     await mongoose.connect(config.database_url as string);
     console.log('-> MongoDB Connected successfully...');
