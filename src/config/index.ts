@@ -1,19 +1,21 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-const nodeEnv: string = process.env.NODE_ENV === 'development' ? 'development' : 'production';
-// test nodeEnv
-
-dotenv.config({ path: path.join(process.cwd(), `${nodeEnv}.env`) });
+const NODE_ENV: string = process.env.NODE_ENV === 'development' ? 'development' : 'production';
+dotenv.config({ path: path.join(process.cwd(), `${NODE_ENV}.env`) });
 
 export default {
+  node_env: process.env.NODE_ENV,
   port: process.env.PORT,
+
   database_url: process.env.DATABASE_URL,
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
+
   jwt: {
-    secret: process.env.JWT_SECRET,
-    refresh_secret: process.env.JWT_EXPIRES_IN,
-    expires_in: process.env.JWT_REFRESH_SECRET,
-    refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
+    access_token_secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+    access_token_expires_in: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
+
+    refresh_token_secret: process.env.JWT_REFRESH_TOKEN_SECRET,
+    refresh_token_expires_in: process.env.JWT_REFRESH_TOKEN_SECRET_IN,
   },
 };
