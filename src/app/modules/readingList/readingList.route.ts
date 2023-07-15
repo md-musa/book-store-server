@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express.Router();
 import * as ReadingListController from './readingList.controller';
-import auth from '../../middlewares/auth';
 import authenticateUser from '../../middlewares/authenticateUser';
 
 router.post('/', authenticateUser, ReadingListController.addToReadingList);

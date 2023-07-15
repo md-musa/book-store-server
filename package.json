@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "set NODE_ENV=development && ts-node-dev --respawn --transpile-only src/server.ts",
     "prod": "set NODE_ENV=production && ts-node-dev --respawn --transpile-only src/server.ts",
-    "start": "node dist/server.js",
+    "start": "set NODE_ENV=production && node dist/server.js",
     "build": "tsc",
+    "deploy": "tsc && vercel --prod",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "lint-format": "npm run format && npm run lint"
