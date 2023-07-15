@@ -13,13 +13,23 @@ const bookSchema = Joi.object({
 
   reviews: Joi.array().items(
     Joi.object({
-      rating: Joi.number().required(),
+      rating: Joi.number().greater(0).less(6).required(),
       description: Joi.string().required(),
       user: Joi.string().required(),
     })
   ),
 });
 
+const updatedBookSchema = Joi.object({
+  title: Joi.string(),
+  genre: Joi.string(),
+  author: Joi.string(),
+  publicationDate: Joi.date(),
+});
+
 export function validateBookData(bookData: IBook) {
   return bookSchema.validate(bookData);
+}
+export function validateUpdatedBookData(bookData: IBook) {
+  return updatedBookSchema.validate(bookData);
 }

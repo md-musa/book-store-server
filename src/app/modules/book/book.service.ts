@@ -1,6 +1,8 @@
+import { IUser } from './../auth/auth.interface';
 import { NotfoundError, UnauthorizedError } from '../../utils/errors';
 import { BookFilters, IBook } from './book.interface';
 import BookModel from './book.model';
+import { JwtPayload } from 'jsonwebtoken';
 
 export const insertBook = async (bookData: IBook): Promise<IBook> => {
   return await BookModel.create(bookData);
@@ -32,16 +34,16 @@ export async function getBooks(page: number, limit: number, filters: BookFilters
 
 export async function getSingleBook(bookId: string): Promise<IBook | null> {
   const book = await BookModel.findById(bookId);
-  if (!book) throw new NotfoundError('Cow is not found with the given id!');
+  if (!book) throw new NotfoundError('book is not found with the given id!');
 
   return book;
 }
 
-export async function updateSingleBook(bookId: string, updateData: Partial<IBook>): Promise<IBook | null> {
+export async function updateSingleBook(user: JwtPayload, bookId: string, updateData: IBook): Promise<IBook | null> {
   const book = await BookModel.findById(bookId);
-  if (!book) throw new NotfoundError("Cow doesn't exist!");
+  if (!book) throw new NotfoundError("Book doesn't exist!");
 
-  // if (cow.seller != req.user.id) throw new UnauthorizedError('You are not authorized');
+  if (user._id != book.user) throw new UnauthorizedError('You are not authorized');
 
   const { title, author, genre, publicationDate } = updateData;
 
@@ -53,11 +55,12 @@ export async function updateSingleBook(bookId: string, updateData: Partial<IBook
   return await book.save();
 }
 
-export async function deleteSingleBook(bookId: string): Promise<IBook | null> {
+export async function deleteSingleBook(user: JwtPayload, bookId: string): Promise<IBook | null> {
   const book = await BookModel.findById(bookId);
-  if (!book) throw new NotfoundError("Cow doesn't exist!");
+  console.log(book);
+  if (!book) throw new NotfoundError("Book doesn't exist!");
 
-  // if (book.user != req.user.id) throw new UnauthorizedError('You are not authorized to perform this action');
+  if (user._id != book.user) throw new UnauthorizedError('You are not authorized to perform this action');
 
   return await BookModel.findByIdAndDelete(bookId);
 }

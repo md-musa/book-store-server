@@ -3,11 +3,11 @@ import * as BookService from './book.service';
 import sendResponse from '../../utils/sendResponse';
 import { UnprocessableEntityError, NotfoundError } from '../../utils/errors';
 import { BookFilters, BookQueryParams, IBook } from './book.interface';
-import { validateBookData } from './book.validation';
+import { validateBookData, validateUpdatedBookData } from './book.validation';
 
 /**
  * @description Create a new book with the provided data.
- * @route   POST /api/cows
+ * @route   POST /api/books
  * @access  Public
  */
 export const createBook = async (req: Request, res: Response): Promise<void> => {
@@ -16,12 +16,12 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
   if (error) throw new UnprocessableEntityError(error);
 
   const book = await BookService.insertBook(bookData);
-  sendResponse(res, 201, 'Cow created successfully', book);
+  sendResponse(res, 201, 'book created successfully', book);
 };
 
 /**
- * @description Retrieve paginated and filtered cow listings based on provided query parameters.
- * @route   GET /api/cows/listings
+ * @description Retrieve paginated and filtered book listings based on provided query parameters.
+ * @route   GET /api/books/listings
  * @access  Public
  */
 export const getBooks = async (req: Request, res: Response): Promise<void> => {
@@ -47,7 +47,7 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
   res.status(200).json({
     success: true,
     statusCode: 200,
-    message: 'Cows retrieved successfully',
+    message: 'books retrieved successfully',
     meta: {
       page: Number(page),
       limit: Number(limit),
@@ -57,44 +57,44 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
- * @description Retrieve a single cow by its ID.
- * @route   GET /api/cows/:id
+ * @description Retrieve a single book by its ID.
+ * @route   GET /api/books/:id
  * @access  Public
  */
 export const getSingleBook = async (req: Request, res: Response): Promise<void> => {
   const { bookId } = req.params;
 
-  const cow = await BookService.getSingleBook(bookId);
-  sendResponse(res, 200, 'Cow retrieved successfully', cow);
+  const book = await BookService.getSingleBook(bookId);
+  sendResponse(res, 200, 'book retrieved successfully', book);
 };
 
 /**
- * @description Update a single cow by its ID with the provided data.
- * @route   PUT /api/cows/:id
+ * @description Update a single book by its ID with the provided data.
+ * @route   PUT /api/books/:id
  * @access  Public
  */
 export const updateSingleBook = async (req: Request, res: Response): Promise<void> => {
   const { bookId } = req.params;
+  const user = req.user;
   const updatedData: IBook = req.body;
-  // const { error } = updatedCowValidate(updatedData);
 
-  // if (error) throw new UnprocessableEntityError(error);
+  const { error } = validateUpdatedBookData(updatedData);
+  if (error) throw new UnprocessableEntityError(error);
 
-  const updatedCow = await BookService.updateSingleBook(bookId, updatedData);
+  const updatedBook = await BookService.updateSingleBook(user, bookId, updatedData);
 
-  sendResponse(res, 200, 'Cow data updated successfully', updatedCow);
+  sendResponse(res, 200, 'book data updated successfully', updatedBook);
 };
 
 /**
- * @description Delete a single cow by its ID.
- * @route   DELETE /api/cows/:id
+ * @description Delete a single book by its ID.
+ * @route   DELETE /api/books/:id
  * @access  Public
  */
 export const deleteSingleBook = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
+  const { bookId } = req.params;
+  const user = req.user;
 
-  const deletedCow = await BookService.deleteSingleBook(id);
-  if (!deletedCow) throw new NotfoundError('Cow is not found with the given id');
-
-  sendResponse(res, 202, 'Cow is deleted successfully', deletedCow);
+  const book = await BookService.deleteSingleBook(user, bookId);
+  sendResponse(res, 202, 'book is deleted successfully', book);
 };

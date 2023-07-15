@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import { IBook, IReview } from './book.interface';
 
 const ReviewSchema = new Schema<IReview>({
-  rating: { type: Number, required: true },
+  rating: { type: Number, min: 1, max: 5, required: true },
   description: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
