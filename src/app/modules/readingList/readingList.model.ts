@@ -1,4 +1,4 @@
-import { Schema, Document, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 export interface IReadingList {
   book: Schema.Types.ObjectId;
@@ -16,6 +16,6 @@ const readingListSchema = new Schema<IReadingList>({
   },
 });
 
-const ReadingListModel = model<IReadingList>('Wishlist', readingListSchema);
+const ReadingListModel = model<IReadingList>('ReadingList', readingListSchema);
 
 export default ReadingListModel;
