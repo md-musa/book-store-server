@@ -9,7 +9,6 @@ const bookSchema = Joi.object({
   details: Joi.string().required(),
   language: Joi.string().required(),
   publicationDate: Joi.date().required(),
-  user: Joi.string().required(),
 
   reviews: Joi.array().items(
     Joi.object({
@@ -26,6 +25,14 @@ const updatedBookSchema = Joi.object({
   author: Joi.string(),
   publicationDate: Joi.date(),
 });
+
+const reviewSchema = Joi.object({
+  rating: Joi.number().greater(0).less(6).required(),
+  description: Joi.string().required(),
+});
+export function validateReview(review: Partial<IBook>) {
+  return reviewSchema.validate(review);
+}
 
 export function validateBookData(bookData: IBook) {
   return bookSchema.validate(bookData);

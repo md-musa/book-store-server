@@ -1,6 +1,5 @@
-import { IUser } from './../auth/auth.interface';
 import { NotfoundError, UnauthorizedError } from '../../utils/errors';
-import { BookFilters, IBook } from './book.interface';
+import { BookFilters, IBook, IReview } from './book.interface';
 import BookModel from './book.model';
 import { JwtPayload } from 'jsonwebtoken';
 
@@ -8,7 +7,19 @@ export const insertBook = async (bookData: IBook): Promise<IBook> => {
   return await BookModel.create(bookData);
 };
 
-export async function getBooks(page: number, limit: number, filters: BookFilters): Promise<{ results: IBook[]; totalCount: number }> {
+export const addBookReview = async (bookId: string, review: IReview): Promise<IBook> => {
+  const book = await BookModel.findById(bookId);
+  if (!book) throw new NotfoundError('Book does not exist');
+
+  book.reviews.push(review);
+  return await book.save();
+};
+
+export async function getBooks(
+  page: number,
+  limit: number,
+  filters: BookFilters
+): Promise<{ results: IBook[]; totalCount: number }> {
   const skip = (page - 1) * limit;
 
   const query = BookModel.find({});
@@ -18,7 +29,7 @@ export async function getBooks(page: number, limit: number, filters: BookFilters
   }
 
   if (filters.genre) {
-    query.where('genre').equals(filters.genre);
+    query.where('genre').equals(filters.genre.toLowerCase());
   }
 
   if (filters.searchTerm) {
@@ -39,7 +50,11 @@ export async function getSingleBook(bookId: string): Promise<IBook | null> {
   return book;
 }
 
-export async function updateSingleBook(user: JwtPayload, bookId: string, updateData: IBook): Promise<IBook | null> {
+export async function updateSingleBook(
+  user: JwtPayload,
+  bookId: string,
+  updateData: IBook
+): Promise<IBook | null> {
   const book = await BookModel.findById(bookId);
   if (!book) throw new NotfoundError("Book doesn't exist!");
 
@@ -60,7 +75,9 @@ export async function deleteSingleBook(user: JwtPayload, bookId: string): Promis
   console.log(book);
   if (!book) throw new NotfoundError("Book doesn't exist!");
 
-  if (user._id != book.user) throw new UnauthorizedError('You are not authorized to perform this action');
+  console.log(user, book);
+  if (user._id != book.user)
+    throw new UnauthorizedError('You are not authorized to perform this action');
 
   return await BookModel.findByIdAndDelete(bookId);
 }

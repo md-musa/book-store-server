@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 export interface IReadingList {
   book: Schema.Types.ObjectId;
   user: Schema.Types.ObjectId;
-  status: 'reading' | 'read soon' | 'finished';
+  status: 'read soon' | 'finished';
 }
 
 const readingListSchema = new Schema<IReadingList>({
@@ -11,7 +11,7 @@ const readingListSchema = new Schema<IReadingList>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   status: {
     type: String,
-    enum: ['reading', 'read soon', 'finished'],
+    enum: ['read soon', 'finished'],
     default: 'read soon',
   },
 });

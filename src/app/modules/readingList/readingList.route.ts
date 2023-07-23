@@ -3,8 +3,9 @@ const router = express.Router();
 import * as ReadingListController from './readingList.controller';
 import authenticateUser from '../../middlewares/authenticateUser';
 
-router.post('/', authenticateUser, ReadingListController.addToReadingList);
 router.get('/', authenticateUser, ReadingListController.getReadingList);
-router.get('/:userId', authenticateUser, ReadingListController.removeFromReadingList);
+// router.get('/', authenticateUser, ReadingListController.removeFromReadingList);
+router.post('/:bookId', authenticateUser, ReadingListController.addToReadingList);
+router.patch('/:bookId', authenticateUser, ReadingListController.updateStatus);
 
 export default router;

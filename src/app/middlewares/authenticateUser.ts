@@ -6,11 +6,14 @@ import config from '../../config';
 const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     //get authorization token
-    const token = req.cookies['refreshToken'];
+    console.log(req.headers);
+    const token = req.headers['authorization'];
+
+    console.log('Authorization token ', token);
     if (!token) throw new UnauthorizedError('You are not authorized');
 
     // verify token
-    const verifiedUser = jwt.verify(token, config.jwt.refresh_token_secret as Secret);
+    const verifiedUser = jwt.verify(token.split(' ')[1], config.jwt.access_token_secret as Secret);
     if (!verifiedUser) throw new UnauthorizedError('Please login');
 
     req.user = verifiedUser as JwtPayload;

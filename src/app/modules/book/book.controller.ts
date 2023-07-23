@@ -2,8 +2,9 @@ import { Response, Request } from 'express';
 import * as BookService from './book.service';
 import sendResponse from '../../utils/sendResponse';
 import { UnprocessableEntityError, NotfoundError } from '../../utils/errors';
-import { BookFilters, BookQueryParams, IBook } from './book.interface';
-import { validateBookData, validateUpdatedBookData } from './book.validation';
+import { BookFilters, BookQueryParams, IBook, IReview } from './book.interface';
+import { validateBookData, validateReview, validateUpdatedBookData } from './book.validation';
+import { JwtPayload } from 'jsonwebtoken';
 
 /**
  * @description Create a new book with the provided data.
@@ -15,8 +16,26 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
   const { error } = validateBookData(bookData);
   if (error) throw new UnprocessableEntityError(error);
 
+  bookData.user = req.user._id;
   const book = await BookService.insertBook(bookData);
   sendResponse(res, 201, 'book created successfully', book);
+};
+
+/**
+ * @description Create a new book with the provided data.
+ * @route   POST /api/books
+ * @access  Public
+ */
+export const addBookReview = async (req: Request, res: Response): Promise<void> => {
+  const bookId: string = req.params.bookId;
+  const review: IReview = req.body;
+
+  const { error } = validateReview(review);
+  if (error) throw new UnprocessableEntityError(error);
+  review.user = req.user._id;
+
+  const book = await BookService.addBookReview(bookId, review);
+  sendResponse(res, 201, 'Review added successfully', book);
 };
 
 /**
@@ -52,7 +71,7 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
       page: Number(page),
       limit: Number(limit),
     },
-    data: results,
+    data: results.reverse(),
   });
 };
 

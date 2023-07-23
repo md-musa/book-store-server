@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import * as WishlistService from './wishlist.service';
 import sendResponse from '../../utils/sendResponse';
+import { ObjectId } from 'mongoose';
 
 export const addToWishlistHandler = async (req: Request, res: Response): Promise<void> => {
-  const { book } = req.body;
+  const { bookId } = req.params;
   const userId = req.user._id;
-  const wishlist = await WishlistService.addToWishlist({ book, user: userId });
+
+  const payload = { book: bookId, user: userId as ObjectId };
+  const wishlist = await WishlistService.addToWishlist(payload);
 
   sendResponse(res, 201, 'Added to wishlist successfully', wishlist);
 };
