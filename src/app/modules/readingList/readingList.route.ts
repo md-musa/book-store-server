@@ -4,7 +4,6 @@ import * as ReadingListController from './readingList.controller';
 import authenticateUser from '../../middlewares/authenticateUser';
 
 router.get('/', authenticateUser, ReadingListController.getReadingList);
-// router.get('/', authenticateUser, ReadingListController.removeFromReadingList);
 router.post('/:bookId', authenticateUser, ReadingListController.addToReadingList);
 router.patch('/:bookId', authenticateUser, ReadingListController.updateStatus);
 

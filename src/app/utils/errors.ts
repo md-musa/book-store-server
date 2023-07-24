@@ -8,13 +8,11 @@ class GeneralError extends Error {
   }
 }
 
-
-
 export class UnprocessableEntityError extends Error {
   error: any;
   constructor(error: any) {
     super(error.details[0].message);
-    this.name = "ValidationError";
+    this.name = 'ValidationError';
     this.error = error;
   }
   getStatusCode() {
@@ -25,7 +23,7 @@ export class UnprocessableEntityError extends Error {
 export class UnauthorizedError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "GeneralError";
+    this.name = 'GeneralError';
   }
 
   getStatusCode() {
@@ -36,18 +34,17 @@ export class UnauthorizedError extends Error {
 export class BadRequestError extends GeneralError {
   constructor(message: string) {
     super(message);
-    this.name = "GeneralError";
+    this.name = 'GeneralError';
   }
   getStatusCode() {
     return 400;
   }
 }
 
-
 export class NotfoundError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "GeneralError";
+    this.name = 'GeneralError';
   }
   getStatusCode() {
     return 404;
@@ -57,17 +54,9 @@ export class NotfoundError extends Error {
 export class ConflictError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "GeneralError";
+    this.name = 'GeneralError';
   }
   getStatusCode() {
     return 409;
   }
 }
-
-class InternalServerError extends GeneralError {
-  getStatusCode() {
-    return 409;
-  }
-}
-
-

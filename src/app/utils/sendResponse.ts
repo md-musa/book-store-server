@@ -10,6 +10,7 @@ export interface ApiResponse {
 /**
  * @param  {res, statusCode, message, data}
  */
+
 function sendResponse(res: Response, statusCode: number, message: string, data?: any): void {
   const response: ApiResponse = {
     success: statusCode >= 200 && statusCode < 400,

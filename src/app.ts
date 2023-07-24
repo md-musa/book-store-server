@@ -12,11 +12,6 @@ import readingListRoute from './app/modules/readingList/readingList.route';
 
 const app: Application = express();
 
-// var corsOptions = {
-//   origin: 'http://localhost:5173',
-//   optionsSuccessStatus: 200,
-// };
-
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());

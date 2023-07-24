@@ -9,7 +9,8 @@ import { JwtPayload } from 'jsonwebtoken';
 /**
  * @description Create a new book with the provided data.
  * @route   POST /api/books
- * @access  Public
+ * @access  USER
+ * @return  {Objet} of created book
  */
 export const createBook = async (req: Request, res: Response): Promise<void> => {
   const bookData: IBook = req.body;
@@ -22,9 +23,10 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
 };
 
 /**
- * @description Create a new book with the provided data.
- * @route   POST /api/books
- * @access  Public
+ * @description Add book review
+ * @route   POST /books/add-review/:bookId
+ * @access  USER
+ * @return {Object} of added review
  */
 export const addBookReview = async (req: Request, res: Response): Promise<void> => {
   const bookId: string = req.params.bookId;
@@ -39,9 +41,10 @@ export const addBookReview = async (req: Request, res: Response): Promise<void> 
 };
 
 /**
- * @description Retrieve paginated and filtered book listings based on provided query parameters.
- * @route   GET /api/books/listings
+ * @description Retrieve books based on provided query parameters.
+ * @route   GET /books/
  * @access  Public
+ * @return {Array} of books
  */
 export const getBooks = async (req: Request, res: Response): Promise<void> => {
   const queryParams: BookQueryParams = req.query;
@@ -76,21 +79,25 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
- * @description Retrieve a single book by its ID.
- * @route   GET /api/books/:id
- * @access  Public
+ * @description Retrieve a single book by book id
+ * @route   GET /books/:bookId
+ * @access  PUBLIC
+ * @return {Object} of book
  */
 export const getSingleBook = async (req: Request, res: Response): Promise<void> => {
   const { bookId } = req.params;
 
   const book = await BookService.getSingleBook(bookId);
+  if (!book) throw new NotfoundError('Book does not exist with this id');
+
   sendResponse(res, 200, 'book retrieved successfully', book);
 };
 
 /**
- * @description Update a single book by its ID with the provided data.
- * @route   PUT /api/books/:id
- * @access  Public
+ * @description Update a single book by book id with the provided data
+ * @route   PATCH /api/books/:id
+ * @access  USER
+ * @returns {Object} of updated book
  */
 export const updateSingleBook = async (req: Request, res: Response): Promise<void> => {
   const { bookId } = req.params;
@@ -106,9 +113,10 @@ export const updateSingleBook = async (req: Request, res: Response): Promise<voi
 };
 
 /**
- * @description Delete a single book by its ID.
- * @route   DELETE /api/books/:id
- * @access  Public
+ * @description Delete a single book by its id
+ * @route       DELETE /books/:bookId
+ * @access      USER
+ * @return      {Object} of deleted book
  */
 export const deleteSingleBook = async (req: Request, res: Response): Promise<void> => {
   const { bookId } = req.params;
