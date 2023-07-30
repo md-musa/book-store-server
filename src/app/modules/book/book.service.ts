@@ -24,10 +24,6 @@ export async function getBooks(
 
   const query = BookModel.find({});
 
-  if (filters.publicationYear) {
-    query.where('publicationYear').equals(filters.publicationYear);
-  }
-
   if (filters.genre) {
     query.where('genre').equals(filters.genre.toLowerCase());
   }
@@ -37,7 +33,13 @@ export async function getBooks(
     query.or([{ title: searchRegex }, { author: searchRegex }, { genre: searchRegex }]);
   }
 
-  const results = await query.skip(skip).limit(limit).exec();
+  let results = await query.skip(skip).limit(limit).exec();
+  if (filters.publicationYear) {
+    results = results.filter(book => {
+      return new Date(book.publicationDate).getFullYear() == filters.publicationYear;
+    });
+  }
+
   const totalCount = await BookModel.countDocuments(query).exec();
 
   return { results, totalCount };
